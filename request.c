@@ -16,15 +16,19 @@
 //数据接收时用到的buffer长度
 #define BUFLEN 1024
 #define STRLEN 1024
+//使用词法语法分析 0=关 1=开
+#define USE_PARSE 1
 
 // typedef struct RequestLine {
-//     char* uri;
+//     char* path;
 //     char* method;
 //     char* version;
 // } RequestLine;
 
 extern int yyparse();
 extern int Request_parse(char *buf, int len);
+//声明全局变量，用于存储词法语法分析之后的结果
+extern RequestLine* ReqLine;
 
 static void send_response(int fd);
 static int read_client_data(int connd, char *buf);
@@ -35,38 +39,61 @@ void Handle_request(int connfd)
     //读取数据
     // int len = 0;
     // char buf[BUFLEN];
-    char *buf, *method, *uri, *version;
-    // char buf[BUFLEN], method[STRLEN], uri[STRLEN], version[STRLEN];
+    char *buf, *method, *path, *version;
+    // char buf[BUFLEN], method[STRLEN], path[STRLEN], version[STRLEN];
 
+    //TODO:变量初始化，内存分配
     buf = calloc(1, 1024);
     if(read_client_data(connfd, buf) != _SUCCODE)
     {
-        printf("Data error, buf is %s", buf);
+        printf("Data error, buf is %s \n", buf);
         return;
     }
-    printf("buf read over, buf is %s", buf);
+    printf("buf read over, buf is %s \n", buf);
     
     //普通解析数据：
     method = calloc(1, 16);
-    uri = calloc(1, 16);
+    path = calloc(1, 16);
     version = calloc(1, 16);
-    // if(sscanf(buf, "%s %s %s", method, uri, version))
-    // {
-    //     printf("buf parse success. method:%s uri:%s version:%s \n", method, uri, version);
-    // }
-    // else
-    // {
-    //     printf("buf parse error... \n");
-    // }
-    
-    //词法语法分析解析数据：
-    extern struct RequestLine* ReqLine;
-    Request_parse(buf, sizeof(buf));
-    strcpy(method, ReqLine->method);
-    strcpy(uri, ReqLine->uri);
-    strcpy(version, ReqLine->version);
-    printf("buf parse success. method:%s abs_path:%s version:%s\n", method, uri, version);
 
+    //TODO:全局变量的使用
+    if (USE_PARSE)
+    {
+        //词法语法分析解析数据：
+        int parse_res = Request_parse(buf, strlen(buf));
+        if (parse_res != _SUCCODE)
+        {
+            printf("buf parse error \n");
+            return;
+        }
+        else
+        {
+            printf("buf parse success \n");
+            // return;
+        }
+        
+        // printf("method:%s \n", ReqLine->method);
+        // printf("path:%s \n", ReqLine->path);
+        // printf("version:%s \n", ReqLine->version);
+        // return ;
+        strcpy(method, ReqLine->method);
+        strcpy(path, ReqLine->path);
+        strcpy(version, ReqLine->version);
+        printf("method:%s abs_path:%s version:%s\n", method, path, version);
+    }
+    else
+    {
+        //通过终端输入数据
+        if(sscanf(buf, "%s %s %s", method, path, version))
+        {
+            printf("buf parse success. method:%s path:%s version:%s \n", method, path, version);
+        }
+        else
+        {
+            printf("buf parse error... \n");
+        }
+    }
+    
     //判断请求方法、判断请求协议
     if (strcasecmp(method, "get")) 
     {
@@ -82,7 +109,7 @@ void Handle_request(int connfd)
     //解析请求路径
     //读取请求文件
     //构造返回结果
-    if (strcasecmp(uri, "/") || strcasecmp(uri, "index.html") || strcasecmp(uri, "/index.html"))
+    if (strcasecmp(path, "/") || strcasecmp(path, "index.html") || strcasecmp(path, "/index.html"))
     {
         send_response(connfd);
     }

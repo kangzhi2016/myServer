@@ -62,17 +62,22 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "bison.y" /* yacc.c:339  */
+#line 1 "bison-1.y" /* yacc.c:339  */
 
     #include <stdio.h>
-    #include "request.h"
 
     int yylex();
     void yyerror(char *s);
 
-    extern RequestLine* ReqLine;
+    typedef struct RequestLine {
+        char* uri;
+        char* method;
+        char* version;
+    } RequestLine;
 
-#line 76 "bison.tab.c" /* yacc.c:339  */
+    RequestLine* ReqLine;
+
+#line 81 "bison-1.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -91,12 +96,12 @@
 #endif
 
 /* In a future release of Bison, this section will be replaced
-   by #include "bison.tab.h".  */
-#ifndef YY_YY_BISON_TAB_H_INCLUDED
-# define YY_YY_BISON_TAB_H_INCLUDED
+   by #include "bison-1.tab.h".  */
+#ifndef YY_YY_BISON_1_TAB_H_INCLUDED
+# define YY_YY_BISON_1_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -120,13 +125,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 14 "bison.y" /* yacc.c:355  */
+#line 17 "bison-1.y" /* yacc.c:355  */
 
     // int num;
     char* str;
     struct RequestLine* request_line;
 
-#line 130 "bison.tab.c" /* yacc.c:355  */
+#line 135 "bison-1.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -139,11 +144,11 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_BISON_TAB_H_INCLUDED  */
+#endif /* !YY_YY_BISON_1_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 147 "bison.tab.c" /* yacc.c:358  */
+#line 152 "bison-1.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -441,7 +446,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    26,    26,    36,    42,    48
+       0,    29,    29,    39,    45,    51
 };
 #endif
 
@@ -451,7 +456,7 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "T_METHOD", "T_VERSION", "T_PATH",
-  "T_SPACE", "T_CRLF", "$accept", "request_line", "method", "path",
+  "T_SPACE", "T_CRLF", "$accept", "request_line", "method", "uri",
   "version", YY_NULLPTR
 };
 #endif
@@ -1211,47 +1216,47 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 26 "bison.y" /* yacc.c:1646  */
+#line 29 "bison-1.y" /* yacc.c:1646  */
     {
         (yyval.request_line) = (RequestLine*)malloc(sizeof(RequestLine));
         (yyval.request_line)->method = (yyvsp[-5].str);
-        (yyval.request_line)->path = (yyvsp[-3].str);
+        (yyval.request_line)->uri = (yyvsp[-3].str);
         (yyval.request_line)->version = (yyvsp[-1].str);
         ReqLine = (yyval.request_line);
         YYACCEPT;
     }
-#line 1224 "bison.tab.c" /* yacc.c:1646  */
+#line 1229 "bison-1.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 36 "bison.y" /* yacc.c:1646  */
+#line 39 "bison-1.y" /* yacc.c:1646  */
     { 
-        printf("parse-method: %s \n", (yyvsp[0].str)); 
+        printf("method: %s \n", (yyvsp[0].str)); 
         (yyval.str) = (yyvsp[0].str); 
     }
-#line 1233 "bison.tab.c" /* yacc.c:1646  */
+#line 1238 "bison-1.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 42 "bison.y" /* yacc.c:1646  */
+#line 45 "bison-1.y" /* yacc.c:1646  */
     { 
-        printf("parse-path: %s \n", (yyvsp[0].str)); 
+        printf("path: %s \n", (yyvsp[0].str)); 
         (yyval.str) = (yyvsp[0].str); 
     }
-#line 1242 "bison.tab.c" /* yacc.c:1646  */
+#line 1247 "bison-1.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 48 "bison.y" /* yacc.c:1646  */
+#line 51 "bison-1.y" /* yacc.c:1646  */
     { 
-        printf("parse-version: %s \n", (yyvsp[0].str)); 
+        printf("version: %s \n", (yyvsp[0].str)); 
         (yyval.str) = (yyvsp[0].str); 
     }
-#line 1251 "bison.tab.c" /* yacc.c:1646  */
+#line 1256 "bison-1.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1255 "bison.tab.c" /* yacc.c:1646  */
+#line 1260 "bison-1.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1479,4 +1484,24 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 53 "bison.y" /* yacc.c:1906  */
+#line 56 "bison-1.y" /* yacc.c:1906  */
+
+
+// int main()
+// {
+//     yyparse();
+//     return 0;
+// }
+
+// int Request_parse(char *buf, int len) {
+//     YY_BUFFER_STATE bp = yy_scan_bytes(buf, len);
+//     yy_switch_to_buffer(bp);
+//     yyparse();
+//     yy_delete_buffer(bp);
+//     return 0;
+// }
+
+// void yyerror(char* s)
+// {
+//     fprintf(stderr, "yyparse_error: %s\n", s);
+// }

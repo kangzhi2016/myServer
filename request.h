@@ -5,12 +5,12 @@
 void Handle_request(int connfd);
 
 typedef struct RequestLine {
-    char* uri;
+    char* path;
     char* method;
     char* version;
 } RequestLine;
 
-// RequestLine* ReqLine;
+RequestLine* ReqLine;
 #endif
 
 
