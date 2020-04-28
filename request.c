@@ -109,12 +109,14 @@ void Handle_request(int connfd)
     //解析请求路径
     //读取请求文件
     //构造返回结果
-    if (strcasecmp(path, "/") || strcasecmp(path, "index.html") || strcasecmp(path, "/index.html"))
-    {
-        send_response(connfd);
-    }
+    // if (strcasecmp(path, "/") || strcasecmp(path, "index.html") || strcasecmp(path, "/index.html"))
+    // {
+    //     //将已连接描述符加入epoll表中，监听可读事件，等待客户端发来的消息
+    //     Add_fd_epollin( epollfd, connfd, ENABLE_ET );
+    //     send_response(connfd);
+    // }
 
-    close(connfd);
+    // close(connfd);
     return;
 }
 
